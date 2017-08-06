@@ -1,0 +1,14 @@
+.canvas {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid gainsboro;
+    width: 28px;
+    height: 28px;
+}
+
+.grid-element {
+    height: 12px;
+    min-width: 12px;
+    background: white;
+    border: 1px solid gainsboro;
+}
