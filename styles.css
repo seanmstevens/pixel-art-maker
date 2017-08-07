@@ -16,19 +16,18 @@ body {
     box-shadow: 0px 5px 10px -2px #cccccc;
 }
 
-.easel {
-    display: flex;
+.canvas {
+    display: inline-block;
+    cursor: default;
+    border: 1px solid gainsboro;
 }
 
-.canvas {
-    display: inline-flex;
-    cursor: default;
-    flex-wrap: wrap;
-    border: 1px solid gainsboro;
-    width: 800px;
+.row {
+    height: 16px;
 }
 
 .grid-element {
+    display: inline-block;
     height: 14px;
     min-width: 14px;
     background: white;
@@ -36,6 +35,7 @@ body {
 }
 
 .palette {
+    display: inline-block;
     position: relative;
     width: 80px;
     padding-left: 20px;
@@ -53,8 +53,7 @@ body {
 
 .user-swatch {
     position: absolute;
-    bottom: 15px;
-    right: 7px;
+    right: 6px;
 }
 
 .swatch:hover, .user-swatch:hover {
@@ -62,6 +61,7 @@ body {
 }
 
 .utility-container {
+    position: relative;
     display: flex;
     align-items: center;
 }
@@ -73,6 +73,10 @@ body {
     color: #b1b1b1;
     text-transform: uppercase;
     font-size: 0.75em;
+}
+
+.utility:hover {
+    color: #8c8989;
 }
 
 .resize, .reset {
@@ -91,6 +95,36 @@ body {
     width: 40px;
     border-radius: 5000px;
     border: 1px solid gainsboro;
+}
+
+.paintbucket {
+
+}
+
+.resize-params-container {
+    position: relative;
+    transform: translate(-310px);
+    overflow: hidden;
+    transition: transform 275ms ease;
+}
+
+.visible {
+    transform: translate(0);
+}
+
+.transition-container {
+    overflow-x: hidden;
+}
+
+.size-label {
+    display: inline-block;
+    position: relative;
+    bottom: 7px;
+    width: 16px;
+    font-family: "Lato", sans-serif;
+    color: #b1b1b1;
+    text-transform: uppercase;
+    font-size: 0.75em;
 }
 
 /*** Swatch Colors ***/

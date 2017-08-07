@@ -3,6 +3,32 @@ var curDown;
 var eraserEnabled;
 var paintbucketEnabled;
 
+/* Generate Grid */
+
+function genGrid(x, y) {
+    var $row = $('<div />', {
+        'class': 'row'
+    });
+    var $square = $('<div />', {
+        'class': 'grid-element'
+    });
+    $('.canvas').empty();
+    for (let i = 0; i < x; i++) {
+        $row.append($square.clone(true, true));
+    }
+    for (let j = 0; j < y; j++) {
+        $('.canvas').append($row.clone(true, true));
+    }
+}
+
+genGrid(50, 25);
+
+$('#grid-cols, #grid-rows').change(function() {
+    console.log($('#grid-cols').val());
+    console.log($('#grid-rows').val());
+    genGrid($('#grid-cols').val(), $('#grid-rows').val());
+});
+
 function enableEraser(elem) {
     eraserEnabled = true;
     $(elem).addClass('eraser');
@@ -56,6 +82,8 @@ $('.swatch').click(function(e) {
 $('.white').on({dblclick: function(e) {
                     if (eraserEnabled === true) {
                         disableEraser(this);
+                        curColor = $(this).css('background-color');
+                        $('.brush-color').css({'background': curColor});
                     } else {
                         enableEraser(this);
                     }
@@ -63,6 +91,9 @@ $('.white').on({dblclick: function(e) {
                 click: function() {
                     if ($(this).hasClass('eraser')) {
                         enableEraser();
+                    } else {
+                        curColor = $(this).css('background-color');
+                        $('.brush-color').css({'background': curColor});
                     }
                 }
 });
@@ -77,6 +108,10 @@ $('#reset').click(function() {
     $('.grid-element').removeAttr('style');
 });
 
+$('#resize').click(function() {
+    $('.resize-params-container').toggleClass('visible');
+})
+
 /***** Flood Fill *****/
 
 $('#paintbucket').click(function(e) {
@@ -90,4 +125,3 @@ if (paintbucketEnabled === true) {
 }
 
 /* LocalStorage */
-
