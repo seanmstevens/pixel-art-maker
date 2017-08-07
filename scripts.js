@@ -25,5 +25,10 @@ $('.canvas').mouseleave(function() {
 $('.swatch').click(function(e) {
     e.preventDefault();
     curColor = $(this).css('background-color');
+    $('.brush-color').css({'background': curColor});
+});
+
+$('#reset').click(function() {
+    $('.grid-element').removeAttr('style');
 });
 
