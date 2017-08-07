@@ -1,14 +1,122 @@
-.canvas {
+body {
     display: flex;
+    justify-content: center;
+    background: #f9f9f9;
+}
+
+.container {
+    margin-top: 5%;
+    display: flex;
+    padding: 40px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px -2px #cccccc;
+}
+
+.canvas {
+    display: inline-flex;
+    cursor: default;
     flex-wrap: wrap;
     border: 1px solid gainsboro;
-    width: 28px;
-    height: 28px;
+    width: 800px;
 }
 
 .grid-element {
-    height: 12px;
-    min-width: 12px;
+    height: 14px;
+    min-width: 14px;
     background: white;
     border: 1px solid gainsboro;
+}
+
+.palette {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100px;
+    padding-left: 20px;
+}
+
+.swatch {
+    height: 25px;
+    width: 25px;
+    border-radius: 1000px;
+    margin: 5px;
+}
+
+/*** Swatch Colors ***/
+
+.navy {
+    background: #001f3f;
+}
+
+.blue {
+    background: #0074d9;
+}
+
+.aqua {
+    background: #7fdbff;
+}
+
+.teal {
+    background: #39cccc;
+}
+
+.olive {
+    background: #3d9970;
+}
+
+.green {
+    background: #2ecc40;
+}
+
+.lime {
+    background: #01ff70;
+}
+
+.yellow {
+    background: #ffdc00;
+}
+
+.peach {
+    background: #f3e79b;
+}
+
+.orange {
+    background: #ff851b;
+}
+
+.red {
+    background: #ff4136;
+}
+
+.maroon {
+    background: #85144b;
+}
+
+.fuchsia {
+    background: #f012be;
+}
+
+.purple {
+    background: #b10dc9;
+}
+
+.sandstone {
+    background: #9e7d5a;
+}
+
+.brown {
+    background: #563e25;
+}
+
+.black {
+    background: #111111;
+}
+
+.gray {
+    background: #aaaaaa;
+}
+
+.white {
+    background: #ffffff;
 }
