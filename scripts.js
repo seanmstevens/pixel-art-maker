@@ -17,6 +17,7 @@ function genGrid(x, y) {
         $row.append($square.clone(true, true));
     }
     for (let j = 0; j < y; j++) {
+        $row.attr('class', 'row _' + j);
         $('.canvas').append($row.clone(true, true));
     }
 }
@@ -43,18 +44,18 @@ $(document.body).on({mousedown: function(e) {
                         e.preventDefault();
                         curDown = true;
                         if (eraserEnabled === true) {
-                            $(this).removeAttr('style');
+                            $(this).removeAttr('style').removeClass('painted');
                         } else {
                             $(this).css({'background': curColor,
-                                        'border-color': curColor});
+                                        'border-color': curColor}).addClass('painted');
                         }
                         $('.grid-element').mouseenter(function() {
                             if (curDown === true) {
                                 if (eraserEnabled === true) {
-                                    $(this).removeAttr('style');
+                                    $(this).removeAttr('style').removeClass('painted');
                                 } else {
                                     $(this).css({'background': curColor,
-                                                 'border-color': curColor});
+                                                 'border-color': curColor}).addClass('painted');
                                 }
                             }
                         });
@@ -112,7 +113,13 @@ $('#reset').click(function() {
 
 $('#resize').click(function() {
     $('.resize-params-container').toggleClass('visible');
-})
+});
+
+$('body').click(function(e) {
+    if ($(e.target).closest('.resize-params-container').length === 0 && e.target.id !== 'resize') {
+        $('.resize-params-container').removeClass('visible');
+    }
+});
 
 /***** Flood Fill *****/
 
@@ -121,9 +128,34 @@ $('#paintbucket').click(function(e) {
 });
 
 if (paintbucketEnabled === true) {
+    var pixelStack = [];
     $('.grid-element').click(function(e) {
-        $(this).siblings()
+        var row = 'blah';
     });
 }
 
 /* LocalStorage */
+
+$('#save').click(function() {
+    var masterCopy = {};
+    $('.grid-element').map(function(idx) {
+        if ($(this).hasClass('painted')) {
+            masterCopy[idx] = $(this).css('background-color');
+        } else {
+            masterCopy[idx] = null;
+        }
+        return localStorage.setItem("masterCopy", JSON.stringify(masterCopy));
+    });
+});
+
+$('#load').click(function() {
+    var masterCopy = localStorage.getItem('masterCopy');
+    var grid = $('.grid-element');
+    JSON.parse(masterCopy, function(key, value) {
+        if (value !== null) {
+            grid.eq(key).css({'background-color': value,
+                              'border-color': value});
+            grid.eq(key).addClass('painted');
+        }
+    });
+});

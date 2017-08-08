@@ -66,7 +66,7 @@ body {
     align-items: center;
 }
 
-.utility {
+.utility, .cur-color {
     cursor: pointer;
     display: inline-block;
     font-family: "Lato", sans-serif;
@@ -75,12 +75,12 @@ body {
     font-size: 0.75em;
 }
 
-.utility:hover {
-    color: #8c8989;
+.utility {
+    margin-right: 18px;
 }
 
-.resize, .reset {
-    margin-right: 10px;
+.utility:hover {
+    color: #8c8989;
 }
 
 .brush-color-container {
@@ -97,19 +97,35 @@ body {
     border: 2px solid gainsboro;
 }
 
-.paintbucket {
-
+.resize-params-container {
+    position: absolute;
+    top: -70px;
+    left: -11px;
+    width: 164px;
+    padding: 10px 0 10px 10px;
+    background: white;
+    box-shadow: 0 4px 10px 0px #cccccc;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 275ms ease;
 }
 
-.resize-params-container {
-    position: relative;
-    transform: translate(-310px);
-    overflow: hidden;
-    transition: transform 275ms ease;
+.resize-params-container::after {
+    content: '';
+    display: block;
+    right: 83px;
+    bottom: -14px;
+    border: 7px solid;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-top-color: #0074d9;
+    position: absolute;
 }
 
 .visible {
-    transform: translate(0);
+    visibility: visible;
+    opacity: 1;
 }
 
 .transition-container {
