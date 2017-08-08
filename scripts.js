@@ -24,8 +24,6 @@ function genGrid(x, y) {
 genGrid(50, 25);
 
 $('#grid-cols, #grid-rows').change(function() {
-    console.log($('#grid-cols').val());
-    console.log($('#grid-rows').val());
     genGrid($('#grid-cols').val(), $('#grid-rows').val());
 });
 
@@ -41,7 +39,7 @@ function disableEraser(elem) {
     $('.brush-color').removeAttr('style').removeClass('eraser');
 }
 
-$('.grid-element').on({mousedown: function(e) {
+$(document.body).on({mousedown: function(e) {
                         e.preventDefault();
                         curDown = true;
                         if (eraserEnabled === true) {
@@ -64,8 +62,7 @@ $('.grid-element').on({mousedown: function(e) {
                         mouseup: function() {
                             curDown = false;
                     }
-});
-
+}, '.grid-element');
 $('.canvas').mouseleave(function() {
     curDown = false;
 });
@@ -98,14 +95,19 @@ $('.white').on({dblclick: function(e) {
                 }
 });
 
-$('.user-selected').change(function(e) {
-    curColor = $(this).val();
-    $('.brush-color').css({'background': curColor});
-    $('.user-swatch').css({'background': curColor});
+$('.user-selected').on("change click", function(e) {
+    if (!$(this).hasClass('eraser')) {
+        eraserEnabled = false;
+        curColor = $(this).val();
+        $('.brush-color').css({'background': curColor});
+        $('.user-swatch').css({'background': curColor});
+    }
 })
 
 $('#reset').click(function() {
     $('.grid-element').removeAttr('style');
+    disableEraser();
+    genGrid(50, 25);
 });
 
 $('#resize').click(function() {
