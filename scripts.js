@@ -12,13 +12,24 @@ function genGrid(x, y) {
     var $square = $('<div />', {
         'class': 'grid-element'
     });
-    $('.canvas').empty();
-    for (let i = 0; i < x; i++) {
-        $row.append($square.clone(true, true));
-    }
-    for (let j = 0; j < y; j++) {
-        $row.attr('class', 'row _' + j);
-        $('.canvas').append($row.clone(true, true));
+    if ($(window).width() >= 1050) {
+        $('.canvas').empty();
+        for (let i = 0; i < x; i++) {
+            $row.append($square.clone(true, true));
+        }
+        for (let j = 0; j < y; j++) {
+            $row.attr('class', 'row _' + j);
+            $('.canvas').append($row.clone(true, true));
+        }
+    } else {
+        var cols = ($(window).width() - 250) / 16;
+        for (let i = 0; i < cols; i++) {
+            $row.append($square.clone(true, true));
+        }
+        for (let j = 0; j < y; j++) {
+            $row.attr('class', 'row _' + j);
+            $('.canvas').append($row.clone(true, true));
+        }
     }
 }
 
@@ -64,6 +75,7 @@ $(document.body).on({mousedown: function(e) {
                             curDown = false;
                     }
 }, '.grid-element');
+
 $('.canvas').mouseleave(function() {
     curDown = false;
 });
@@ -130,7 +142,7 @@ $('#paintbucket').click(function(e) {
 if (paintbucketEnabled === true) {
     var pixelStack = [];
     $('.grid-element').click(function(e) {
-        var row = 'blah';
+        var row = $(this).parent();
     });
 }
 
