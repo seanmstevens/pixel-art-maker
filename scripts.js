@@ -2,8 +2,8 @@ let curColor;
 let curDown;
 let eraserEnabled;
 let paintbucketEnabled;
-let $rows;
-let $cols;
+let rows;
+let cols;
 
 /* Generate Grid */
 
@@ -15,8 +15,8 @@ function genGrid(x, y) {
         'class': 'grid-element'
     });
     $('.canvas').empty();
-    $rows = y;
-    $cols = x;
+    rows = y;
+    cols = x;
     if ($(window).width() >= 1050) {
         for (let i = 0; i < x; i++) {
             $row.append($square.clone(true, true));
@@ -26,8 +26,7 @@ function genGrid(x, y) {
             $('.canvas').append($row.clone(true, true));
         }
     } else {
-        let cols = ($(window).width() - 250) / 16;
-        $cols = cols;
+        cols = ($(window).width() - 250) / 16;
         for (let i = 0; i < cols; i++) {
             $row.append($square.clone(true, true));
         }
@@ -41,9 +40,9 @@ function genGrid(x, y) {
 genGrid(50, 25);
 
 $('#grid-cols, #grid-rows').change(function() {
-    $rows = $('#grid-rows').val();
-    $cols = $('#grid-cols').val();
-    genGrid($cols, $rows);
+    rows = $('#grid-rows').val();
+    cols = $('#grid-cols').val();
+    genGrid(cols, rows);
 });
 
 function enableEraser(elem) {
@@ -129,6 +128,8 @@ $('#reset').click(function() {
     disableEraser();
     $('.white').removeClass('eraser');
     curColor = null;
+    $('#grid-rows').val(25);
+    $('#grid-cols').val(50);
     genGrid(50, 25);
 });
 
@@ -163,8 +164,8 @@ if (paintbucketEnabled === true) {
 
 $('#save').click(function() {
     const masterCopy = {};
-    masterCopy['width'] = $cols;
-    masterCopy['height'] = $rows;
+    masterCopy['width'] = cols;
+    masterCopy['height'] = rows;
     $('.grid-element').map(function(idx) {
         if ($(this).hasClass('painted')) {
             masterCopy[idx] = $(this).css('background-color');
