@@ -1,19 +1,23 @@
-var curColor;
-var curDown;
-var eraserEnabled;
-var paintbucketEnabled;
+let curColor;
+let curDown;
+let eraserEnabled;
+let paintbucketEnabled;
+let $rows;
+let $cols;
 
 /* Generate Grid */
 
 function genGrid(x, y) {
-    var $row = $('<div />', {
+    const $row = $('<div />', {
         'class': 'row'
     });
-    var $square = $('<div />', {
+    const $square = $('<div />', {
         'class': 'grid-element'
     });
+    $('.canvas').empty();
+    $rows = y;
+    $cols = x;
     if ($(window).width() >= 1050) {
-        $('.canvas').empty();
         for (let i = 0; i < x; i++) {
             $row.append($square.clone(true, true));
         }
@@ -22,7 +26,8 @@ function genGrid(x, y) {
             $('.canvas').append($row.clone(true, true));
         }
     } else {
-        var cols = ($(window).width() - 250) / 16;
+        let cols = ($(window).width() - 250) / 16;
+        $cols = cols;
         for (let i = 0; i < cols; i++) {
             $row.append($square.clone(true, true));
         }
@@ -36,7 +41,9 @@ function genGrid(x, y) {
 genGrid(50, 25);
 
 $('#grid-cols, #grid-rows').change(function() {
-    genGrid($('#grid-cols').val(), $('#grid-rows').val());
+    $rows = $('#grid-rows').val();
+    $cols = $('#grid-cols').val();
+    genGrid($cols, $rows);
 });
 
 function enableEraser(elem) {
@@ -120,8 +127,14 @@ $('.user-selected').on("change click", function(e) {
 $('#reset').click(function() {
     $('.grid-element').removeAttr('style');
     disableEraser();
+    $('.white').removeClass('eraser');
+    curColor = null;
     genGrid(50, 25);
 });
+
+$('#clear').click(function() {
+    $('.grid-element').removeAttr('style class').addClass('grid-element');
+})
 
 $('#resize').click(function() {
     $('.resize-params-container').toggleClass('visible');
@@ -140,16 +153,18 @@ $('#paintbucket').click(function(e) {
 });
 
 if (paintbucketEnabled === true) {
-    var pixelStack = [];
+    const pixelStack = [];
     $('.grid-element').click(function(e) {
-        var row = $(this).parent();
+        const row = $(this).parent();
     });
 }
 
 /* LocalStorage */
 
 $('#save').click(function() {
-    var masterCopy = {};
+    const masterCopy = {};
+    masterCopy['width'] = $cols;
+    masterCopy['height'] = $rows;
     $('.grid-element').map(function(idx) {
         if ($(this).hasClass('painted')) {
             masterCopy[idx] = $(this).css('background-color');
@@ -161,8 +176,9 @@ $('#save').click(function() {
 });
 
 $('#load').click(function() {
-    var masterCopy = localStorage.getItem('masterCopy');
-    var grid = $('.grid-element');
+    const masterCopy = localStorage.getItem('masterCopy');
+    genGrid(JSON.parse(masterCopy)['width'], JSON.parse(masterCopy)['height']);
+    const grid = $('.grid-element');
     JSON.parse(masterCopy, function(key, value) {
         if (value !== null) {
             grid.eq(key).css({'background-color': value,

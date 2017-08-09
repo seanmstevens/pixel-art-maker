@@ -19,7 +19,7 @@ body {
 .canvas {
     display: inline-block;
     cursor: default;
-    border: 1px solid gainsboro;
+    border: 2px solid #cacaca;
 }
 
 .row {
@@ -70,7 +70,7 @@ body {
     cursor: pointer;
     display: inline-block;
     font-family: "Lato", sans-serif;
-    color: #b1b1b1;
+    color: #a0a0a0;
     text-transform: uppercase;
     font-size: 0.75em;
 }
@@ -80,7 +80,11 @@ body {
 }
 
 .utility:hover {
-    color: #8c8989;
+    color: #6a6a6a;
+}
+
+.reset:hover {
+    color: #ed372d;
 }
 
 .brush-color-container {
@@ -94,7 +98,7 @@ body {
     height: 40px;
     width: 40px;
     border-radius: 5000px;
-    border: 2px solid gainsboro;
+    border: 2px solid #c3c3c3;
 }
 
 .resize-params-container {
@@ -138,7 +142,7 @@ body {
     bottom: -2px;
     width: 16px;
     font-family: "Lato", sans-serif;
-    color: #b1b1b1;
+    color: #a0a0a0;
     text-transform: uppercase;
     font-size: 0.75em;
 }
@@ -318,7 +322,7 @@ input[type=range].size-slider:focus::-ms-fill-upper {
 
 .white {
     background: #ffffff;
-    border: 1px solid gainsboro;
+    border: 1px solid #c3c3c3;
 }
 
 .eraser {
