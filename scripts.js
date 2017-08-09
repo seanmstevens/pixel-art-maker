@@ -39,7 +39,7 @@ function genGrid(x, y) {
 
 genGrid(50, 25);
 
-$('#grid-cols, #grid-rows').change(function() {
+$('#grid-cols, #grid-rows').mouseup(function() {
     rows = $('#grid-rows').val();
     cols = $('#grid-cols').val();
     genGrid(cols, rows);
@@ -141,7 +141,7 @@ $('#resize').click(function() {
     $('.resize-params-container').toggleClass('visible');
 });
 
-$('body').click(function(e) {
+$('html').click(function(e) {
     if ($(e.target).closest('.resize-params-container').length === 0 && e.target.id !== 'resize') {
         $('.resize-params-container').removeClass('visible');
     }
