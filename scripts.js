@@ -1,6 +1,7 @@
 let curColor;
 let curDown;
 let eraserEnabled;
+let eyedropperEnabled;
 let paintbucketEnabled;
 let rows;
 let cols;
@@ -57,18 +58,45 @@ function disableEraser(elem) {
     $('.brush-color').removeAttr('style').removeClass('eraser');
 }
 
+function enablePaintbucket() {
+    paintbucketEnabled = true;
+    $('#paintbucket').addClass('active');
+}
+
+function disablePaintbucket() {
+    paintbucketEnabled = false;
+    $('#paintbucket').removeClass('active');
+}
+
+function enableEyedropper() {
+    eyedropperEnabled = true;
+    $('#eyedropper').addClass('active');
+    console.log('Eyedropper enabled: ' + eyedropperEnabled);
+}
+
+function disableEyedropper() {
+    eyedropperEnabled = false;
+    $('#eyedropper').removeClass('active');
+    console.log('Eyedropper enabled: ' + eyedropperEnabled);
+}
+
 $(document.body).on({mousedown: function(e) {
                         e.preventDefault();
                         curDown = true;
-                        if (eraserEnabled === true) {
+                        if (eyedropperEnabled && $(this).hasClass('painted') && !eraserEnabled) {
+                            curColor = $(this).css('background-color');
+                            $('.brush-color').css({'background': curColor});
+                            disableEyedropper();
+                        }
+                        if (eraserEnabled) {
                             $(this).removeAttr('style').removeClass('painted');
                         } else {
                             $(this).css({'background': curColor,
                                         'border-color': curColor}).addClass('painted');
                         }
                         $('.grid-element').mouseenter(function() {
-                            if (curDown === true) {
-                                if (eraserEnabled === true) {
+                            if (curDown) {
+                                if (eraserEnabled) {
                                     $(this).removeAttr('style').removeClass('painted');
                                 } else {
                                     $(this).css({'background': curColor,
@@ -79,7 +107,7 @@ $(document.body).on({mousedown: function(e) {
                         },
                         mouseup: function() {
                             curDown = false;
-                    }
+                        }
 }, '.grid-element');
 
 $('.canvas').mouseleave(function() {
@@ -87,6 +115,7 @@ $('.canvas').mouseleave(function() {
 });
 
 $('.swatch').click(function(e) {
+    disableEyedropper();
     if (!$(this).hasClass('eraser')) {
         eraserEnabled = false;
         e.preventDefault();
@@ -96,7 +125,7 @@ $('.swatch').click(function(e) {
 });
 
 $('.white').on({dblclick: function(e) {
-                    if (eraserEnabled === true) {
+                    if (eraserEnabled) {
                         disableEraser(this);
                         curColor = $(this).css('background-color');
                         $('.brush-color').css({'background': curColor});
@@ -126,6 +155,8 @@ $('.user-selected').on("change click", function(e) {
 $('#reset').click(function() {
     $('.grid-element').removeAttr('style');
     disableEraser();
+    disableEyedropper();
+    disablePaintbucket();
     $('.white').removeClass('eraser');
     curColor = null;
     $('#grid-rows').val(25);
@@ -134,11 +165,21 @@ $('#reset').click(function() {
 });
 
 $('#clear').click(function() {
+    disableEyedropper();
+    disablePaintbucket();
     $('.grid-element').removeAttr('style class').addClass('grid-element');
 })
 
+$('#eyedropper').click(function() {
+    if (eyedropperEnabled) {
+        disableEyedropper();
+    } else {
+        enableEyedropper();
+    }
+});
+
 $('#resize').click(function() {
-    $('.resize-params-container').toggleClass('visible');
+    $('.resize-params-container').addClass('visible');
 });
 
 $('html').click(function(e) {
@@ -149,14 +190,17 @@ $('html').click(function(e) {
 
 /***** Flood Fill *****/
 
-$('#paintbucket').click(function(e) {
+$('#paintbucket').click(function() {
     paintbucketEnabled = true;
+    console.log(paintbucketEnabled);
+    $(this).toggleClass('active');
 });
 
-if (paintbucketEnabled === true) {
+if (paintbucketEnabled) {
     const pixelStack = [];
     $('.grid-element').click(function(e) {
-        const row = $(this).parent();
+        const square = $(this).siblings().addBack().index(this);
+        console.log(square);
     });
 }
 
