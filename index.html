@@ -34,7 +34,7 @@
                     <div class='swatch black'></div>
                     <div class='swatch gray'></div>
                     <div class='swatch white'></div>
-                    <label class='user-swatch'><input type='color' class='user-selected'></label>
+                    <label class='user-swatch'><input type='color' class='user-selected' defaultValue='rgb(227, 136, 200)'></label>
                 </div>
             </div>
             <div class='utility-container'>
@@ -42,9 +42,11 @@
                 <div id='resize' class='utility resize'>Resize</div>
                 <div class='resize-params-container'>
                     <span class='size-label'>W:</span>
-                    <input id='grid-cols' class='size-slider' type='range' min='1' max='70' value='50'>
+                    <input id='grid-cols' class='size-slider' type='range' min='1' value='50'>
+                    <span id='col-size-indicator' class='size-indicator'></span>
                     <span class='size-label'>H:</span>
                     <input id='grid-rows' class='size-slider' type='range' min='1' max='70' value='25'>
+                    <span id='row-size-indicator' class='size-indicator'></span>
                 </div>
                 <div id='paintbucket' class= 'utility paintbucket'>Paintbucket</div>
                 <div id='eyedropper' class= 'utility eyedropper'>Eyedropper</div>

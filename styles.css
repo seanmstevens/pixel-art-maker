@@ -3,6 +3,7 @@
 body {
     display: flex;
     justify-content: center;
+    font-family: "Lato", sans-serif;
     background: #f9f9f9;
 }
 
@@ -69,7 +70,6 @@ body {
 .utility, .cur-color {
     cursor: pointer;
     display: inline-block;
-    font-family: "Lato", sans-serif;
     color: #a0a0a0;
     text-transform: uppercase;
     font-size: 0.75em;
@@ -88,10 +88,6 @@ body {
     color: #ed372d;
 }
 
-.paintbucket.active, .eyedropper.active {
-    color: #2c8fe6;
-}
-
 .brush-color-container {
     display: flex;
     align-items: center;
@@ -108,18 +104,22 @@ body {
 
 .resize-params-container {
     position: absolute;
-    top: -60px;
+    top: -35px;
     left: -9px;
     width: 164px;
     padding: 10px 0 10px 10px;
     background: white;
-    box-shadow: 0 4px 10px 0px #cccccc;
+    box-shadow: 0 1px 8px 0 rgba(40, 40, 40, .2), 
+                0 3px 4px 0 rgba(40, 40, 40, .14), 
+                0 3px 3px -2px rgba(40, 40, 40, .12);
     visibility: hidden;
     opacity: 0;
-    transition: opacity 275ms ease;
+    transition: opacity 275ms ease,
+                top 275ms ease;
 }
 
 .resize-params-container::after {
+    position: absolute;
     content: '';
     display: block;
     right: 83px;
@@ -129,12 +129,12 @@ body {
     border-right-color: transparent;
     border-bottom-color: transparent;
     border-top-color: #0074d9;
-    position: absolute;
 }
 
 .visible {
     visibility: visible;
     opacity: 1;
+    top: -60px;
 }
 
 .transition-container {
@@ -146,16 +146,28 @@ body {
     position: relative;
     bottom: -2px;
     width: 16px;
-    font-family: "Lato", sans-serif;
     color: #a0a0a0;
     text-transform: uppercase;
     font-size: 0.75em;
 }
 
+.size-indicator {
+    position: relative;
+    bottom: -2px;
+    color: #6b6b6b;
+    letter-spacing: 0.05em;
+    margin: auto 5px;
+    font-weight: bold;
+}
+
+.active, .active:hover {
+    color: #2c8fe6;
+}
+
 input[type=range].size-slider {
     -webkit-appearance: none;
     padding: 0;
-    width: 80%;
+    width: 66%;
     margin: 10px 0;
 }
 
@@ -164,7 +176,7 @@ input[type=range].size-slider:focus {
 }
 
 input[type=range].size-slider::-webkit-slider-runnable-track {
-    width: 80%;
+    width: 66%;
     height: 5px;
     cursor: pointer;
     box-shadow: 0px 0px 0.1px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
@@ -190,7 +202,7 @@ input[type=range].size-slider:focus::-webkit-slider-runnable-track {
 }
 
 input[type=range].size-slider::-moz-range-track {
-    width: 80%;
+    width: 66%;
     height: 5px;
     cursor: pointer;
     box-shadow: 0px 0px 0.1px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
@@ -210,7 +222,7 @@ input[type=range].size-slider::-moz-range-thumb {
 }
 
 input[type=range].size-slider::-ms-track {
-    width: 80%;
+    width: 66%;
     height: 5px;
     cursor: pointer;
     background: transparent;

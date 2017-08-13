@@ -1,14 +1,9 @@
-let curColor;
-let curDown;
-let eraserEnabled;
-let eyedropperEnabled;
-let paintbucketEnabled;
-let rows;
-let cols;
+let curColor, curDown, eraserEnabled, eyedropperEnabled, paintbucketEnabled, rows, cols;
+let gridValues = {};
 
 /* Generate Grid */
 
-function genGrid(x, y) {
+function genGrid(x = null, y = null) {
     const $row = $('<div />', {
         'class': 'row'
     });
@@ -16,9 +11,13 @@ function genGrid(x, y) {
         'class': 'grid-element'
     });
     $('.canvas').empty();
-    rows = y;
-    cols = x;
-    if ($(window).width() >= 1050) {
+    rows = Math.floor(($(window).height() - 220) / 16);
+    cols = Math.floor(($(window).width() - 440) / 16);
+    if (x && y) {
+        $('#grid-cols').val(x);
+        $('#grid-rows').val(y);
+        $('#col-size-indicator').text(x);
+        $('#row-size-indicator').text(y);
         for (let i = 0; i < x; i++) {
             $row.append($square.clone(true, true));
         }
@@ -27,23 +26,33 @@ function genGrid(x, y) {
             $('.canvas').append($row.clone(true, true));
         }
     } else {
-        cols = ($(window).width() - 250) / 16;
+        $('#grid-cols').val(cols);
+        $('#grid-rows').val(rows);
+        $('#col-size-indicator').text(cols);
+        $('#row-size-indicator').text(rows);
         for (let i = 0; i < cols; i++) {
             $row.append($square.clone(true, true));
         }
-        for (let j = 0; j < y; j++) {
+        for (let j = 0; j < rows; j++) {
             $row.attr('class', 'row _' + j);
             $('.canvas').append($row.clone(true, true));
         }
     }
 }
 
-genGrid(50, 25);
+genGrid();
+$('#grid-cols').attr('max', Math.floor(($(window).width() - 220) / 16));
 
-$('#grid-cols, #grid-rows').mouseup(function() {
-    rows = $('#grid-rows').val();
-    cols = $('#grid-cols').val();
-    genGrid(cols, rows);
+$('#grid-cols, #grid-rows').on({
+    mouseup: function() {
+        cols = $('#grid-cols').val();
+        rows = $('#grid-rows').val();
+        genGrid(cols, rows);
+    },
+    input: function() {
+        $('#col-size-indicator').text($('#grid-cols').val());
+        $('#row-size-indicator').text($('#grid-rows').val());    
+    }
 });
 
 function enableEraser(elem) {
@@ -71,13 +80,11 @@ function disablePaintbucket() {
 function enableEyedropper() {
     eyedropperEnabled = true;
     $('#eyedropper').addClass('active');
-    console.log('Eyedropper enabled: ' + eyedropperEnabled);
 }
 
 function disableEyedropper() {
     eyedropperEnabled = false;
     $('#eyedropper').removeClass('active');
-    console.log('Eyedropper enabled: ' + eyedropperEnabled);
 }
 
 $(document.body).on({mousedown: function(e) {
@@ -143,6 +150,7 @@ $('.white').on({dblclick: function(e) {
                 }
 });
 
+// User-Selected Swatch
 $('.user-selected').on("change click", function(e) {
     if (!$(this).hasClass('eraser')) {
         eraserEnabled = false;
@@ -150,8 +158,9 @@ $('.user-selected').on("change click", function(e) {
         $('.brush-color').css({'background': curColor});
         $('.user-swatch').css({'background': curColor});
     }
-})
+});
 
+// Reset ALL Canvas Properties
 $('#reset').click(function() {
     $('.grid-element').removeAttr('style');
     disableEraser();
@@ -159,16 +168,14 @@ $('#reset').click(function() {
     disablePaintbucket();
     $('.white').removeClass('eraser');
     curColor = null;
-    $('#grid-rows').val(25);
-    $('#grid-cols').val(50);
-    genGrid(50, 25);
+    genGrid();
 });
 
 $('#clear').click(function() {
     disableEyedropper();
     disablePaintbucket();
     $('.grid-element').removeAttr('style class').addClass('grid-element');
-})
+});
 
 $('#eyedropper').click(function() {
     if (eyedropperEnabled) {
@@ -178,31 +185,52 @@ $('#eyedropper').click(function() {
     }
 });
 
+$('#paintbucket').click(function() {
+    if (eyedropperEnabled) {
+        disablePaintbucket();
+    } else {
+        enablePaintbucket();
+        const pixelStack = [];
+        let newPos;
+        let pixelPos;
+        let $x, $y;
+        let targetColor;
+        $('.grid-element').click(function(e) {
+            targetColor = $(this).css('background-color');
+            $x = $(this).siblings().addBack().index(this);
+            $y = $(this).parent().siblings().addBack().index($(this).parent());
+            pixelPos = [$x, $y];
+            console.log('pixel: ' + $x, 'row: ' + $y);
+            console.log($('.row._' + $y));
+            while ($x-- > 0 && $x <= cols && !isPainted($(this).siblings().eq($x))) {
+                pixelPos = [$x, $y];
+                console.log(isPainted($(this).siblings().eq($x)));
+                console.log(pixelPos);
+                $(this).siblings().eq($x).css({'background': targetColor,
+                                               'border-color': targetColor});
+            }
+        });
+    }
+});
+
+function isPainted(pixel) {
+    return $(pixel).hasClass('painted');
+}
+
 $('#resize').click(function() {
     $('.resize-params-container').addClass('visible');
+    $(this).addClass('active');
 });
 
 $('html').click(function(e) {
     if ($(e.target).closest('.resize-params-container').length === 0 && e.target.id !== 'resize') {
         $('.resize-params-container').removeClass('visible');
+        $('#resize').removeClass('active');
     }
 });
 
 /***** Flood Fill *****/
 
-$('#paintbucket').click(function() {
-    paintbucketEnabled = true;
-    console.log(paintbucketEnabled);
-    $(this).toggleClass('active');
-});
-
-if (paintbucketEnabled) {
-    const pixelStack = [];
-    $('.grid-element').click(function(e) {
-        const square = $(this).siblings().addBack().index(this);
-        console.log(square);
-    });
-}
 
 /* LocalStorage */
 
