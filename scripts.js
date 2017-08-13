@@ -40,6 +40,7 @@ function genGrid(x = null, y = null) {
     }
 }
 
+// Generating the first grid and setting the maximum canvas width according to window size
 genGrid();
 $('#grid-cols').attr('max', Math.floor(($(window).width() - 220) / 16));
 
@@ -87,34 +88,41 @@ function disableEyedropper() {
     $('#eyedropper').removeClass('active');
 }
 
-$(document.body).on({mousedown: function(e) {
-                        e.preventDefault();
-                        curDown = true;
-                        if (eyedropperEnabled && $(this).hasClass('painted') && !eraserEnabled) {
-                            curColor = $(this).css('background-color');
-                            $('.brush-color').css({'background': curColor});
-                            disableEyedropper();
-                        }
-                        if (eraserEnabled) {
-                            $(this).removeAttr('style').removeClass('painted');
-                        } else {
-                            $(this).css({'background': curColor,
+$(document.body).on({
+    mousedown: function(e) {
+        e.preventDefault();
+        curDown = true;
+        if (paintbucketEnabled) {
+            $x = $(this).siblings().addBack().index(this);
+            $y = $(this).parent().siblings().addBack().index($(this).parent());
+            floodStart($x, $y);
+        } else {
+            if (eyedropperEnabled && $(this).hasClass('painted') && !eraserEnabled) {
+                curColor = $(this).css('background-color');
+                $('.brush-color').css({'background': curColor});
+                disableEyedropper();
+            }
+            if (eraserEnabled) {
+                $(this).removeAttr('style').removeClass('painted');
+            } else {
+                $(this).css({'background': curColor,
+                            'border-color': curColor}).addClass('painted');
+            }
+            $('.grid-element').mouseenter(function() {
+                if (curDown) {
+                    if (eraserEnabled) {
+                        $(this).removeAttr('style').removeClass('painted');
+                    } else {
+                        $(this).css({'background': curColor,
                                         'border-color': curColor}).addClass('painted');
-                        }
-                        $('.grid-element').mouseenter(function() {
-                            if (curDown) {
-                                if (eraserEnabled) {
-                                    $(this).removeAttr('style').removeClass('painted');
-                                } else {
-                                    $(this).css({'background': curColor,
-                                                 'border-color': curColor}).addClass('painted');
-                                }
-                            }
-                        });
-                        },
-                        mouseup: function() {
-                            curDown = false;
-                        }
+                    }
+                }
+            });
+        }
+    },
+    mouseup: function() {
+        curDown = false;
+    },
 }, '.grid-element');
 
 $('.canvas').mouseleave(function() {
@@ -131,23 +139,24 @@ $('.swatch').click(function(e) {
     }
 });
 
-$('.white').on({dblclick: function(e) {
-                    if (eraserEnabled) {
-                        disableEraser(this);
-                        curColor = $(this).css('background-color');
-                        $('.brush-color').css({'background': curColor});
-                    } else {
-                        enableEraser(this);
-                    }
-                },
-                click: function() {
-                    if ($(this).hasClass('eraser')) {
-                        enableEraser();
-                    } else {
-                        curColor = $(this).css('background-color');
-                        $('.brush-color').css({'background': curColor});
-                    }
-                }
+$('.white').on({
+    dblclick: function() {
+        if (eraserEnabled) {
+            disableEraser(this);
+            curColor = $(this).css('background-color');
+            $('.brush-color').css({'background': curColor});
+        } else {
+            enableEraser(this);
+        }
+    },
+    click: function() {
+        if ($(this).hasClass('eraser')) {
+            enableEraser();
+        } else {
+            curColor = $(this).css('background-color');
+            $('.brush-color').css({'background': curColor});
+        }
+    }
 });
 
 // User-Selected Swatch
@@ -186,35 +195,61 @@ $('#eyedropper').click(function() {
 });
 
 $('#paintbucket').click(function() {
-    if (eyedropperEnabled) {
+    if (paintbucketEnabled) {
         disablePaintbucket();
     } else {
         enablePaintbucket();
-        const pixelStack = [];
-        let newPos;
-        let pixelPos;
-        let $x, $y;
-        let targetColor;
-        $('.grid-element').click(function(e) {
-            targetColor = $(this).css('background-color');
-            $x = $(this).siblings().addBack().index(this);
-            $y = $(this).parent().siblings().addBack().index($(this).parent());
-            pixelPos = [$x, $y];
-            console.log('pixel: ' + $x, 'row: ' + $y);
-            console.log($('.row._' + $y));
-            while ($x-- > 0 && $x <= cols && !isPainted($(this).siblings().eq($x))) {
-                pixelPos = [$x, $y];
-                console.log(isPainted($(this).siblings().eq($x)));
-                console.log(pixelPos);
-                $(this).siblings().eq($x).css({'background': targetColor,
-                                               'border-color': targetColor});
-            }
-        });
     }
 });
 
-function isPainted(pixel) {
-    return $(pixel).hasClass('painted');
+// $('.grid-element').click(function(e) {
+//     targetColor = $(this).css('background-color');
+//     $x = $(this).siblings().addBack().index(this);
+//     $y = $(this).parent().siblings().addBack().index($(this).parent());
+//     pixelPos = [$x, $y];
+//     console.log('pixel: ' + $x, 'row: ' + $y);
+// });
+
+function floodStart(x, y) {
+    const pixelStack = [];
+    floodFill(x, y);
+    
+    function floodFill(x, y){
+        pixelStack.push([x, y]);
+        fillPixel(x, y);
+    
+        while (x > 0 || y > 0 || x < cols || y < rows || pixelStack.length) {
+            toFill = pixelStack.pop();
+            console.log(toFill);
+            fillPixel(toFill[0], toFill[1]);
+        }
+    }
+    
+    function fillPixel(x, y){
+        if (!alreadyFilled(x, y)) {
+            fill(x, y);
+        }
+        if (!alreadyFilled(x, y-1)) pixelStack.push([x, y-1]);
+        if (!alreadyFilled(x+1, y)) pixelStack.push([x+1, y]);
+        if (!alreadyFilled(x, y+1)) pixelStack.push([x, y+1]);
+        if (!alreadyFilled(x-1, y)) pixelStack.push([x-1, y]);
+    }
+    
+    function fill(x, y){
+        pixel = $('.canvas').children().eq(y).children().eq(x);
+        pixel.css({'background-color': curColor,
+                   'border-color': curColor});
+        pixel.addClass('painted');   
+    }
+    
+    function alreadyFilled(x, y){
+        // this functions checks to see if our square has been filled already
+        pixel = $('.canvas').children().eq(y).children().eq(x);
+        return $(pixel).hasClass('painted');
+    }
+}
+
+function alreadyFilled(x, y) {
 }
 
 $('#resize').click(function() {
