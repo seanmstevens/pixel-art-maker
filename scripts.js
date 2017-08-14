@@ -19,6 +19,7 @@ function genGrid(x = null, y = null) {
         $('#col-size-indicator').text(x);
         $('#row-size-indicator').text(y);
         for (let i = 0; i < x; i++) {
+            $square.attr('data-x', i);
             $row.append($square.clone(true, true));
         }
         for (let j = 0; j < y; j++) {
@@ -31,10 +32,11 @@ function genGrid(x = null, y = null) {
         $('#col-size-indicator').text(cols);
         $('#row-size-indicator').text(rows);
         for (let i = 0; i < cols; i++) {
+            $square.attr('data-x', i);
             $row.append($square.clone(true, true));
         }
         for (let j = 0; j < rows; j++) {
-            $row.attr('class', 'row _' + j);
+            $row.children().attr('data-y', j);
             $('.canvas').append($row.clone(true, true));
         }
     }
@@ -215,41 +217,44 @@ function floodStart(x, y) {
     floodFill(x, y);
     
     function floodFill(x, y){
-        pixelStack.push([x, y]);
         fillPixel(x, y);
     
-        while (x > 0 || y > 0 || x < cols || y < rows || pixelStack.length) {
+        while (pixelStack.length) {
             toFill = pixelStack.pop();
-            console.log(toFill);
+            x = toFill[0];
+            y = toFill[1];
             fillPixel(toFill[0], toFill[1]);
         }
     }
     
-    function fillPixel(x, y){
-        if (!alreadyFilled(x, y)) {
+    function fillPixel(x, y) {
+        if (!alreadyFilled(x, y) && (validPixel(x, y))) {
             fill(x, y);
         }
-        if (!alreadyFilled(x, y-1)) pixelStack.push([x, y-1]);
-        if (!alreadyFilled(x+1, y)) pixelStack.push([x+1, y]);
-        if (!alreadyFilled(x, y+1)) pixelStack.push([x, y+1]);
-        if (!alreadyFilled(x-1, y)) pixelStack.push([x-1, y]);
+        if (!alreadyFilled(x, y - 1) && (validPixel(x, y - 1))) pixelStack.push([x, y - 1]);
+        if (!alreadyFilled(x + 1, y) && (validPixel(x + 1, y))) pixelStack.push([x + 1, y]);
+        if (!alreadyFilled(x, y + 1) && (validPixel(x, y + 1))) pixelStack.push([x, y + 1]);
+        if (!alreadyFilled(x - 1, y) && (validPixel(x - 1, y))) pixelStack.push([x - 1, y]);
     }
     
-    function fill(x, y){
+    function fill(x, y) {
+        // Fills the pixel with the desired color
         pixel = $('.canvas').children().eq(y).children().eq(x);
         pixel.css({'background-color': curColor,
                    'border-color': curColor});
         pixel.addClass('painted');   
     }
     
-    function alreadyFilled(x, y){
-        // this functions checks to see if our square has been filled already
+    function alreadyFilled(x, y) {
+        // Checks to see if our square has been filled already
         pixel = $('.canvas').children().eq(y).children().eq(x);
-        return $(pixel).hasClass('painted');
+        return pixel.hasClass('painted');
     }
-}
 
-function alreadyFilled(x, y) {
+    function validPixel(x, y) {
+        // Verifies that pixel is within the grid
+        return (x >= 0 && x < cols && y >= 0 && y < rows);
+    }
 }
 
 $('#resize').click(function() {
