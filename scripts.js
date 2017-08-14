@@ -14,6 +14,8 @@ function genGrid(x = null, y = null) {
     rows = Math.floor(($(window).height() - 220) / 16);
     cols = Math.floor(($(window).width() - 440) / 16);
     if (x && y) {
+        cols = x;
+        rows = y;
         $('#grid-cols').val(x);
         $('#grid-rows').val(y);
         $('#col-size-indicator').text(x);
