@@ -3,7 +3,9 @@ let gridValues = {};
 
 /* Generate Grid */
 
-function genGrid(x = null, y = null) {
+function genGrid(x, y) {
+    x = x || false;
+    y = y || false;
     const $row = $('<div />', {
         'class': 'row'
     });
