@@ -288,8 +288,8 @@ $('#save').click(function() {
         } else {
             masterCopy[idx] = null;
         }
-        return localStorage.setItem("masterCopy", JSON.stringify(masterCopy));
     });
+    localStorage.setItem("masterCopy", JSON.stringify(masterCopy));
 });
 
 $('#load').click(function() {
